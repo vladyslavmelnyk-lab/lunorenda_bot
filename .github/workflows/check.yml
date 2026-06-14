@@ -1,10 +1,10 @@
 name: check-rent
 
 on:
-  schedule:
-    # Кожні 20 хвилин (UTC). GitHub може трохи затримувати запуск під навантаженням.
-    - cron: "*/20 * * * *"
-  workflow_dispatch: {} # ручний запуск з вкладки Actions
+  # Тригериться зовні через cron-job.org (workflow_dispatch через GitHub API)
+  # або вручну з вкладки Actions. Рідний schedule не використовуємо
+  # через його ненадійність (затримки/пропуски).
+  workflow_dispatch: {}
 
 # Потрібно, щоб коммітити оновлений seen.json назад у репозиторій.
 permissions:
