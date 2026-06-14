@@ -1,0 +1,45 @@
+name: check-rent
+
+on:
+  schedule:
+    # Кожні 20 хвилин (UTC). GitHub може трохи затримувати запуск під навантаженням.
+    - cron: "*/20 * * * *"
+  workflow_dispatch: {} # ручний запуск з вкладки Actions
+
+# Потрібно, щоб коммітити оновлений seen.json назад у репозиторій.
+permissions:
+  contents: write
+
+# Не запускати паралельно — щоб не було конфліктів при коміті seen.json.
+concurrency:
+  group: check-rent
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ORS_API_KEY: ${{ secrets.ORS_API_KEY }}
+        run: node index.js
+
+      - name: Commit seen.json
+        run: |
+          if [[ -n "$(git status --porcelain seen.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add seen.json
+            git commit -m "chore: update seen.json [skip ci]"
+            git push
+          else
+            echo "seen.json без змін"
+          fi

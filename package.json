@@ -1,0 +1,14 @@
+{
+  "name": "lun-rent-bot",
+  "version": "1.0.0",
+  "description": "Сповіщення в Telegram про нові оголошення оренди з LUN, що близько до офісу (пішки < 30 хв)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dry": "DRY_RUN=1 node index.js"
+  },
+  "license": "MIT"
+}
