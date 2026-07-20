@@ -1,3 +1,5 @@
+import { config } from "../config.js";
+
 const TG_BASE = "https://api.telegram.org";
 
 function escapeHtml(text) {
@@ -18,8 +20,21 @@ export function formatMessage(listing) {
   const owner = listing.isOwner ? "👤 власник" : "🏢 агентство/інше";
   const head = [rooms, area, floor].filter(Boolean).join(", ");
 
+  const times = [];
+  if (listing.walkMinutes != null && listing.walkMinutes <= config.maxWalkMinutes) {
+    times.push(`${listing.walkMinutes} хв пішки 🚶`);
+  }
+  if (
+    config.transit.enabled &&
+    listing.transitMinutes != null &&
+    listing.transitMinutes <= config.transit.maxMinutes
+  ) {
+    times.push(`${listing.transitMinutes} хв метром 🚇`);
+  }
+  const timeLine = times.join(" • ") || "—";
+
   const lines = [
-    `🏠 <b>${escapeHtml(price)}</b> — ${listing.walkMinutes} хв пішки 🚶`,
+    `🏠 <b>${escapeHtml(price)}</b> — ${timeLine}`,
     head ? escapeHtml(head) : null,
     listing.address ? `📍 ${escapeHtml(listing.address)}` : null,
     owner,

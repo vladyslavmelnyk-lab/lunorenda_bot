@@ -10,5 +10,8 @@
     "start": "node index.js",
     "dry": "DRY_RUN=1 node index.js"
   },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  },
   "license": "MIT"
 }
